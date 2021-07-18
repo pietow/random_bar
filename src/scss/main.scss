@@ -1,1 +1,107 @@
 // This is where you can import other stylesheets or write your scss code
+@use 'sass:math';
+// @debug math.random(); //returns random decimal number between 0 and 1 if nothing given
+@mixin random_bar($color, $direction) {
+    //#######Degree and percentage for linear bg########
+    $deg: (random() * 180deg);
+    $per: 1% * (random(90) + 10);
+    // @debug $deg;
+    // @debug $per;
+    background-image: linear-gradient($deg, white 0%, $color $per);
+
+    //#######Radius########
+    $var_l: 1em * (random(9) - 0.8);
+    $var_r: 1em * (random(9) - 0.8);
+    // @debug $var_l;
+    // @debug $var_r;
+
+    @if $direction == top {
+        border-top-left-radius: $var_l;
+        border-top-right-radius: $var_r;
+    } @else if $direction == bottom {
+        border-bottom-left-radius: $var_l;
+        border-bottom-right-radius: $var_r;
+    } @else {
+        @error "Unknown direction #{$direction}.";
+    }
+
+    //#######Height#######
+    $height: 1% * random(100);
+    // @debug $height;
+    height: $height;
+}
+
+//#####Animation-mixin########
+@mixin animation-mixin($name, $from, $to) {
+    @keyframes #{$name} {
+        0% {
+            height: $from;
+        }
+        50% {
+            height: $to;
+        }
+        100% {
+            height: $from;
+        }
+    }
+}
+
+
+$pink: hsl(329, 100%, 66%);
+$purple: hsl(269, 45%, 39%);
+body {
+    background: hsl(54, 66%, 80%);
+    margin: 0;
+}
+
+.container {
+    height: 50vh;
+    width: 75vh;
+    margin: auto;
+    display: flex;
+}
+
+.bar {
+    flex: 1;
+    height: 1%;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+}
+
+.container > div:nth-child(odd) {
+    align-self: flex-end;
+}
+
+@for $index from 0 to 16 {
+    .container > div:nth-child(#{2 * $index + 1}) {
+        @include random_bar($pink, top);
+    }
+}
+
+.container > div:nth-child(even) {
+    background-image: linear-gradient(100deg, white 0%, $purple 10%);
+    align-self: flex-start;
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 1em;
+}
+
+@for $index from 0 to 16 {
+    .container > div:nth-child(#{2 * $index}) {
+        @include random_bar($purple, bottom);
+    }
+}
+
+//iterate through all elements and create for each itertion an different animation with a different name and different heights
+@for $index from 0 to 31 {
+    $name:animation+#{$index};
+    $height1: 1% * random(100);
+    $height2: 1% * random(100);
+    @include animation-mixin($name, $height1, $height2);
+    .container > div:nth-child(#{$index}) {
+        //for each child give different name by $name identifier and set different random speed
+        animation-name: $name; 
+        animation-duration: 1s * random() + 0.7s;
+    }
+}
+
