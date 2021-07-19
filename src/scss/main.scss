@@ -81,7 +81,7 @@ body {
 
 .container > div:nth-child(even) {
     background-image: linear-gradient(100deg, white 0%, $purple 10%);
-    align-self: flex-start;
+    // align-self: flex-start;
     border-bottom-left-radius: 0.5em;
     border-bottom-right-radius: 1em;
 }
